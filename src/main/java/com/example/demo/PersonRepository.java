@@ -7,4 +7,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface PersonRepository extends ReactiveMongoRepository<Person, String> {
     Mono<Person> findByName(String name);
+
+    Mono<Person> findByNameAndId(String name, String id);
 }

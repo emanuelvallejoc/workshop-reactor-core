@@ -14,6 +14,11 @@ public class Person {
 
     }
 
+    public Person(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Person(String name) {
         this.name = name;
     }
@@ -32,5 +37,13 @@ public class Person {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

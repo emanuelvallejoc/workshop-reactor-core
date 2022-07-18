@@ -11,6 +11,8 @@ import java.util.function.BiFunction;
 public class PersonService {
     private final BiFunction<PersonRepository, Person, Mono<Person>> validateBeforeInsert
             = (repo, person) -> repo.findByName(person.getName());
+    private final BiFunction<PersonRepository, Person, Mono<Person>> validateBeforeUpdate
+            = (repo, person) -> repo.findByNameAndId(person.getName(), person.getId());
     @Autowired
     private PersonRepository repository;
 
@@ -24,4 +26,20 @@ public class PersonService {
                 .switchIfEmpty(Mono.defer(() -> personMono.doOnNext(repository::save)))
                 .then();
     }
+
+    public Mono<Person> getById(String id) {
+        return repository.findById(id);
+    }
+
+    public Mono<Void> update(Mono<Person> personMono) {
+        return personMono
+                .flatMap(person -> validateBeforeUpdate.apply(repository, person))
+                .switchIfEmpty(Mono.defer(() -> personMono.doOnNext(repository::save)))
+                .then();
+    }
+
+    public Mono<Void> delete(String id) {
+        return repository.findById(id).flatMap(person -> repository.delete(person));
+    }
+
 }
